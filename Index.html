@@ -1,0 +1,2125 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>என் வாழ்க்கைச் சோலை | Life Sanctuary & Growth App</title>
+    <!-- Tailwind CSS for sleek styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons & Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Noto+Sans+Tamil:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', '"Noto Sans Tamil"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f6f7f9',
+                            100: '#edeef2',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            900: '#1e1b4b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans Tamil', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .glass-sticky {
+            background: rgba(255, 252, 235, 0.85);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(254, 240, 138, 0.6);
+            box-shadow: 0 12px 30px -10px rgba(180, 83, 9, 0.15);
+        }
+        .glass-modal {
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        /* Background Crossfade Animation */
+        .vision-bg-slide {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            transition: opacity 2.5s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: opacity;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.3);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-800 antialiased min-h-screen relative overflow-x-hidden">
+
+    <!-- ==================== BACKGROUND VISION BOARD SLIDER ==================== -->
+    <div id="visionSliderContainer" class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div id="bgSlideA" class="vision-bg-slide opacity-100"></div>
+        <div id="bgSlideB" class="vision-bg-slide opacity-0"></div>
+        <!-- Serene gradient overlay to ensure text contrast -->
+        <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/70"></div>
+    </div>
+
+    <!-- ==================== MAIN APPLICATION CONTAINER ==================== -->
+    <div class="relative z-10 min-h-screen flex flex-col justify-between p-4 sm:p-6 max-w-5xl mx-auto">
+        
+        <!-- TOP HEADER: App Title & Vision Board Image Customizer -->
+        <header class="flex items-center justify-between pt-2 pb-4">
+            <div class="flex items-center space-x-3 text-white drop-shadow-md">
+                <div class="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 shadow-inner">
+                    <i class="ph-duotone ph-sparkle text-amber-300 text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-wide">Sanctuary</h1>
+                    <p class="text-xs text-white/80" id="currentDateDisplay">Today</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <!-- Master Alarm Enable & Test Button -->
+                <button onclick="requestAllPermissionsAndTestAlarm()" id="globalAlarmBtn" title="Enable & Test All Alarms" class="px-3 py-1.5 rounded-full bg-emerald-500/80 hover:bg-emerald-600 backdrop-blur-md text-white text-xs font-semibold border border-white/30 transition flex items-center gap-1.5 shadow-sm">
+                    <i class="ph-fill ph-bell-ringing text-sm"></i>
+                    <span id="globalAlarmBtnText">அலாரம் ஆன்</span>
+                </button>
+                <!-- Vision Board Backgrounds upload button -->
+                <button onclick="openVisionUploadModal()" title="Customize Vision Board Backgrounds" class="px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md text-white text-xs font-medium border border-white/30 transition flex items-center gap-1.5 shadow-sm">
+                    <i class="ph-bold ph-image text-sm"></i>
+                    <span>Vision Board</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- CENTER STAGE: Sticky Note Affirmation -->
+        <main class="my-auto py-6 flex flex-col items-center">
+            <div class="w-full max-w-md transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+                <div class="glass-sticky p-6 sm:p-8 rounded-3xl relative overflow-hidden group">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-28 h-6 bg-amber-400/30 rounded-sm backdrop-blur-sm shadow-sm rotate-1"></div>
+                    
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-[11px] font-bold tracking-widest text-amber-900/70 uppercase flex items-center gap-1.5">
+                            <i class="ph-fill ph-sun text-amber-600 text-sm"></i> அமைதி & ஊக்கம் (Affirmation)
+                        </span>
+                        <button onclick="cycleAffirmation(true)" class="text-amber-800/60 hover:text-amber-900 p-1 rounded-full hover:bg-amber-100/50 transition" title="Next Affirmation">
+                            <i class="ph-bold ph-arrows-clockwise text-base"></i>
+                        </button>
+                    </div>
+
+                    <p id="affirmationText" class="text-lg sm:text-xl font-medium text-amber-950 leading-relaxed font-sans min-h-[75px] flex items-center">
+                        "நான் முழு அமைதியோடும் தெளிவோடும் இருக்கிறேன். இன்றைய நாள் எனக்கு மகத்தான வெற்றியைத் தரும்."
+                    </p>
+
+                    <div class="mt-4 pt-3 border-t border-amber-900/10 flex items-center justify-between text-xs text-amber-800/70">
+                        <span id="affirmationCount">1 / 18 Affirmation</span>
+                        <span class="italic">மனதை ஆழமாக சுவாசித்து அமைதியாக்குங்கள்</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HOME PAGE BOTTOM 1/4th: Daily Progress Analytics Bar -->
+            <div class="w-full max-w-lg mt-6">
+                <div onclick="openModal('analyticsModal')" class="glass-card p-4 rounded-2xl cursor-pointer hover:bg-white/85 transition shadow-lg border border-white/50 group">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="p-1.5 bg-indigo-100 text-indigo-700 rounded-lg text-xs font-semibold">
+                                <i class="ph-bold ph-chart-line-up"></i>
+                            </span>
+                            <span class="text-xs font-bold text-slate-700">இன்றைய நாள் நிறைவு (Today's Progress)</span>
+                        </div>
+                        <div class="flex items-center gap-1 text-xs font-semibold text-indigo-600 group-hover:translate-x-0.5 transition">
+                            <span id="overallPercentage">0%</span>
+                            <i class="ph-bold ph-caret-right"></i>
+                        </div>
+                    </div>
+                    <!-- Overall Progress bar -->
+                    <div class="w-full bg-slate-200/80 rounded-full h-2.5 overflow-hidden">
+                        <div id="overallProgressBar" class="bg-gradient-to-r from-emerald-500 via-indigo-500 to-sky-500 h-2.5 rounded-full transition-all duration-700" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between items-center mt-2.5 text-[11px] text-slate-500 font-medium">
+                        <span id="todayBreakdown">0/4 இலக்குகள் முடிந்தது</span>
+                        <span class="text-slate-400">கிளிக் செய்து வீக்லி/மந்த்லி பார்க்கவும் →</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ==================== BOTTOM NAVIGATION GRID (3 ON LEFT, 3 ON RIGHT) ==================== -->
+        <footer class="mt-auto pt-4 pb-2">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+                
+                <!-- 1. Daily Timetable -->
+                <button onclick="openModal('timetableModal')" class="glass-card p-3 rounded-2xl hover:scale-[1.02] active:scale-95 transition flex flex-col items-center justify-center text-center gap-1.5 border border-white/40 shadow-md">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl shadow-inner">
+                        <i class="ph-duotone ph-calendar-check"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800">டைம் டேபிள்</span>
+                    <span id="badgeTimetable" class="text-[10px] text-slate-500 font-medium">0 Done</span>
+                </button>
+
+                <!-- 2. Water Tracker -->
+                <button onclick="openModal('waterModal')" class="glass-card p-3 rounded-2xl hover:scale-[1.02] active:scale-95 transition flex flex-col items-center justify-center text-center gap-1.5 border border-white/40 shadow-md">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-100 text-cyan-600 flex items-center justify-center text-xl shadow-inner">
+                        <i class="ph-duotone ph-drop"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800">வாட்டர் டிராக்கர்</span>
+                    <span id="badgeWater" class="text-[10px] text-slate-500 font-medium">0/8 Cups</span>
+                </button>
+
+                <!-- 3. Book Studio -->
+                <button onclick="openModal('booksModal')" class="glass-card p-3 rounded-2xl hover:scale-[1.02] active:scale-95 transition flex flex-col items-center justify-center text-center gap-1.5 border border-white/40 shadow-md relative">
+                    <span id="month5thBadge" class="hidden absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-white animate-pulse"></span>
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl shadow-inner">
+                        <i class="ph-duotone ph-books"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800">புக் லைப்ரரி</span>
+                    <span id="badgeBooks" class="text-[10px] text-slate-500 font-medium">0 Books</span>
+                </button>
+
+                <!-- 4. Pleasure & Regret Journal -->
+                <button onclick="openModal('journalModal')" class="glass-card p-3 rounded-2xl hover:scale-[1.02] active:scale-95 transition flex flex-col items-center justify-center text-center gap-1.5 border border-white/40 shadow-md">
+                    <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl shadow-inner">
+                        <i class="ph-duotone ph-notebook"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800">இரவு ஜர்னல்</span>
+                    <span id="badgeJournal" class="text-[10px] text-slate-500 font-medium">9:00 PM Alarm</span>
+                </button>
+
+                <!-- 5. Ho'oponopono Meditation -->
+                <button onclick="openModal('meditationModal')" class="glass-card p-3 rounded-2xl hover:scale-[1.02] active:scale-95 transition flex flex-col items-center justify-center text-center gap-1.5 border border-white/40 shadow-md">
+                    <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-xl shadow-inner">
+                        <i class="ph-duotone ph-heart-half"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800">ஹோ'போனோபோனோ</span>
+                    <span class="text-[10px] text-slate-500 font-medium">5 Min Meditation</span>
+                </button>
+
+                <!-- 6. Morning Gratitude -->
+                <button onclick="openModal('gratitudeModal')" class="glass-card p-3 rounded-2xl hover:scale-[1.02] active:scale-95 transition flex flex-col items-center justify-center text-center gap-1.5 border border-white/40 shadow-md">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl shadow-inner">
+                        <i class="ph-duotone ph-sun-horizon"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800">மார்னிங் கிராட்டிடியூட்</span>
+                    <span id="badgeGratitude" class="text-[10px] text-slate-500 font-medium">10 Points</span>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+
+    <!-- ========================================================================= -->
+    <!--                                MODALS CONTAINER                          -->
+    <!-- ========================================================================= -->
+
+    <!-- ==================== 1. DAILY TIMETABLE MODAL ==================== -->
+    <div id="timetableModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="glass-modal w-full max-w-xl max-h-[90vh] rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 flex flex-col shadow-2xl border border-white/60">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div class="flex items-center gap-2">
+                    <i class="ph-duotone ph-calendar-check text-blue-600 text-2xl"></i>
+                    <h2 class="text-lg font-bold text-slate-800">டெய்லி டைம் டேபிள் (Daily Timetable)</h2>
+                </div>
+                <button onclick="closeModal('timetableModal')" class="p-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"><i class="ph-bold ph-x text-lg"></i></button>
+            </div>
+
+            <!-- Add Task Form -->
+            <form id="timetableForm" onsubmit="handleSaveTimetable(event)" class="mt-4 p-3 bg-blue-50/60 rounded-2xl border border-blue-100 flex flex-col gap-2">
+                <input type="hidden" id="editTimetableId" value="">
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <input type="time" id="timetableTime" required class="px-3 py-2 bg-white rounded-xl text-xs font-semibold border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    <input type="text" id="timetableTask" placeholder="செய்ய வேண்டிய வேலை (Task Details)..." required class="flex-1 px-3 py-2 bg-white rounded-xl text-xs border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+                <div class="flex items-center justify-between mt-1">
+                    <label class="flex items-center gap-1.5 text-xs text-blue-900 font-semibold cursor-pointer">
+                        <input type="checkbox" id="timetableAlarmCheck" checked class="w-4 h-4 rounded text-blue-600 focus:ring-blue-400">
+                        <span>இந்த நேரத்திற்கு அலாரம் அடிக்கவும் (Sound Alarm)</span>
+                    </label>
+                    <div class="flex gap-2">
+                        <button type="button" id="cancelEditTimetableBtn" onclick="resetTimetableForm()" class="hidden text-xs text-slate-500 px-3 py-1.5 rounded-lg hover:bg-slate-200">Cancel</button>
+                        <button type="submit" id="saveTimetableBtn" class="bg-blue-600 text-white text-xs font-semibold px-4 py-2 rounded-xl hover:bg-blue-700 shadow-sm transition flex items-center gap-1">
+                            <i class="ph-bold ph-plus"></i> Add to Timetable
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Timetable List Container -->
+            <div class="flex-1 overflow-y-auto mt-4 space-y-2 pr-1" id="timetableList">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== 2. WATER TRACKER MODAL ==================== -->
+    <div id="waterModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="glass-modal w-full max-w-lg max-h-[90vh] rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 flex flex-col shadow-2xl border border-white/60">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div class="flex items-center gap-2">
+                    <i class="ph-duotone ph-drop text-cyan-600 text-2xl"></i>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800">தண்ணீர் டிராக்கர் (8 Slots)</h2>
+                        <p class="text-xs text-slate-500">நாள்தோறும் 8 முறை பிரிக்கப்பட்ட ஹைட்ரேஷன்</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('waterModal')" class="p-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"><i class="ph-bold ph-x text-lg"></i></button>
+            </div>
+
+            <div class="mt-4 p-3 bg-cyan-50/70 rounded-2xl flex items-center justify-between border border-cyan-100">
+                <div>
+                    <span class="text-xs text-slate-500 font-medium">இன்றைய இலக்கு (Target):</span>
+                    <p class="text-base font-bold text-cyan-900" id="waterSummary">0 / 8 முடிந்தது (0 ml)</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleWaterAlarms()" id="waterAlarmToggleBtn" class="text-xs text-cyan-800 bg-white px-2.5 py-1.5 rounded-xl border border-cyan-200 hover:bg-cyan-100/50 font-semibold transition flex items-center gap-1">
+                        <i class="ph-fill ph-bell text-cyan-600"></i> <span id="waterAlarmStatusText">8 Alarms Active</span>
+                    </button>
+                    <button onclick="openWaterSlotConfig()" class="text-xs text-cyan-700 bg-white px-2.5 py-1.5 rounded-xl border border-cyan-200 hover:bg-cyan-100/50 font-medium transition flex items-center gap-1">
+                        <i class="ph-bold ph-faders"></i> Edit Slots
+                    </button>
+                </div>
+            </div>
+
+            <!-- Water 8 slots interactive list -->
+            <div class="flex-1 overflow-y-auto mt-4 space-y-2 pr-1" id="waterSlotsList">
+                <!-- Populated via JS -->
+            </div>
+
+            <!-- Date Selector for viewing past records -->
+            <div class="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-600">
+                <span>தேதி வாரியாகப் பார்க்க:</span>
+                <input type="date" id="waterHistoryDate" onchange="renderWaterTracker(this.value)" class="bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-medium">
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== 3. BOOK LIBRARY & TRACKER MODAL ==================== -->
+    <div id="booksModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="glass-modal w-full max-w-2xl max-h-[92vh] rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 flex flex-col shadow-2xl border border-white/60">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div class="flex items-center gap-2">
+                    <i class="ph-duotone ph-books text-amber-600 text-2xl"></i>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800">என் புத்தக சாலை (Book Studio)</h2>
+                        <p class="text-xs text-slate-500">ரீடிங் புரோக்ரஸ், ஸ்டார்ட் & பினிஷ் தேதி, குறிப்புகள்</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('booksModal')" class="p-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"><i class="ph-bold ph-x text-lg"></i></button>
+            </div>
+
+            <!-- Monthly 5th reminder banner if triggered -->
+            <div id="monthly5thReminderBanner" class="hidden mt-3 p-3 bg-amber-50 rounded-2xl border border-amber-200 flex items-start justify-between gap-2">
+                <div class="flex items-start gap-2">
+                    <i class="ph-fill ph-bell-ringing text-amber-600 text-lg mt-0.5"></i>
+                    <p class="text-xs text-amber-900 font-medium">
+                        <strong>மாதாந்திர புக் அப்டேட் (5-ம் தேதி):</strong> இந்த மாதம் நீங்கள் வாங்கிய புதிய 2 புத்தகங்களின் பெயர்களை கீழே உள்ள பட்டனை அழுத்தி ஆட் பண்ணுங்கள்!
+                    </p>
+                </div>
+                <button onclick="openAddBookModal(true)" class="shrink-0 bg-amber-600 text-white text-[11px] px-2.5 py-1 rounded-lg font-bold shadow-sm">Add 2 Books</button>
+            </div>
+
+            <!-- Add Buttons: Bulk Add & Single Add -->
+            <div class="mt-3 flex gap-2">
+                <button onclick="openBulkBookModal()" class="flex-1 py-2 px-3 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1">
+                    <i class="ph-bold ph-list-plus"></i> மொத்த லிஸ்ட்டை ஆட் செய்ய (Bulk Add)
+                </button>
+                <button onclick="openAddBookModal(false)" class="py-2 px-4 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold shadow-sm transition flex items-center justify-center gap-1">
+                    <i class="ph-bold ph-plus"></i> புதிய புத்தகம்
+                </button>
+            </div>
+
+            <!-- Books Grid/List Container -->
+            <div class="flex-1 overflow-y-auto mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 pr-1" id="booksCardsContainer">
+                <!-- Dynamically rendered -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== 3B. BOOK DETAIL & NOTES MODAL ==================== -->
+    <div id="bookDetailModal" class="fixed inset-0 z-60 hidden bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+        <div class="glass-modal w-full max-w-lg max-h-[92vh] rounded-3xl p-5 sm:p-6 flex flex-col shadow-2xl border border-white/60">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                <h3 class="font-bold text-base text-slate-800" id="detailBookTitle">Book Title</h3>
+                <button onclick="closeModal('bookDetailModal')" class="p-1 rounded-full text-slate-400 hover:text-slate-700"><i class="ph-bold ph-x text-lg"></i></button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto space-y-4 py-3">
+                <input type="hidden" id="detailBookId">
+
+                <!-- Reading Progress Inputs -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase">தற்போதைய பக்கம் (Current Page)</label>
+                        <input type="number" id="detailCurrentPage" class="mt-1 w-full p-2 bg-white rounded-xl border border-slate-200 text-sm font-semibold focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase">மொத்த பக்கங்கள் (Total Pages)</label>
+                        <input type="number" id="detailTotalPages" class="mt-1 w-full p-2 bg-white rounded-xl border border-slate-200 text-sm font-semibold focus:ring-2 focus:ring-amber-500">
+                    </div>
+                </div>
+
+                <!-- Reading Progress Bar -->
+                <div>
+                    <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+                        <span>வாசிப்பு நிலை</span>
+                        <span id="detailProgressPercentage">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-200 rounded-full h-2">
+                        <div id="detailProgressBar" class="bg-amber-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Dates -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase">ஆரம்பித்த தேதி (Start Date)</label>
+                        <input type="date" id="detailStartDate" class="mt-1 w-full p-2 bg-white rounded-xl border border-slate-200 text-xs font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase">முடித்த தேதி (Completed Date)</label>
+                        <input type="date" id="detailEndDate" class="mt-1 w-full p-2 bg-white rounded-xl border border-slate-200 text-xs font-medium">
+                    </div>
+                </div>
+
+                <!-- Personal Notes -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">புத்தகக் குறிப்புகள் & சிந்தனைகள் (Reading Notes)</label>
+                    <textarea id="detailNotes" rows="5" placeholder="இந்தப் புத்தகத்தில் நீங்கள் கற்ற முக்கியமான வரிகள் மற்றும் யோசனைகளை இங்கே குறித்து வைக்கவும்..." class="w-full p-3 bg-white rounded-2xl border border-slate-200 text-xs leading-relaxed focus:ring-2 focus:ring-amber-500"></textarea>
+                </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-200 flex justify-between items-center">
+                <button onclick="handleDeleteCurrentBook()" class="text-xs text-rose-500 hover:text-rose-700 font-semibold flex items-center gap-1">
+                    <i class="ph-bold ph-trash"></i> Delete Book
+                </button>
+                <button onclick="handleSaveBookDetails()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow transition">
+                    சேமிக்க (Save Details)
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== 4. PLEASURE & REGRET JOURNAL MODAL ==================== -->
+    <div id="journalModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="glass-modal w-full max-w-xl max-h-[92vh] rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 flex flex-col shadow-2xl border border-white/60">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div class="flex items-center gap-2">
+                    <i class="ph-duotone ph-notebook text-purple-600 text-2xl"></i>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800">பிளஷர் & ரெக்ரட் ஜர்னல் (Night Journal)</h2>
+                        <p class="text-xs text-slate-500">இரவு 9:00 மணி சுயபரிசோதனை அலாரம்</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('journalModal')" class="p-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"><i class="ph-bold ph-x text-lg"></i></button>
+            </div>
+
+            <!-- Alarm Status Alert & Notification Permission -->
+            <div class="mt-3 p-3 bg-purple-50 rounded-2xl border border-purple-100 flex items-center justify-between">
+                <div class="flex items-center gap-2 text-xs text-purple-900 font-medium">
+                    <i class="ph-fill ph-alarm text-purple-600 text-base"></i>
+                    <span>நைட் 9:00 PM அலாரம் இயங்குகிறது:</span>
+                </div>
+                <button onclick="enableAlarmNotification()" id="notifyPermissionBtn" class="bg-purple-600 text-white text-[11px] px-3 py-1 rounded-lg font-semibold shadow-sm">
+                    அலாரம் செக் & ஒலி
+                </button>
+            </div>
+
+            <!-- Date switcher -->
+            <div class="mt-3 flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-600">தேதி (Date):</span>
+                <input type="date" id="journalDate" onchange="loadJournalForDate(this.value)" class="text-xs p-1.5 bg-white border border-slate-200 rounded-xl font-medium">
+            </div>
+
+            <div class="flex-1 overflow-y-auto space-y-3 mt-3 pr-1">
+                <!-- Pleasure / Done Right -->
+                <div class="p-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl">
+                    <label class="block text-xs font-bold text-emerald-900 mb-1 flex items-center gap-1.5">
+                        <i class="ph-fill ph-check-circle text-emerald-600"></i> இன்று நான் சரியாக செய்த விஷயம் (Pleasure / Win)
+                    </label>
+                    <textarea id="journalPleasure" rows="3" placeholder="இன்று நான் பெருமைப்படும் அல்லது மகிழ்ச்சி தரும் ஒரு சரியான செயல்..." class="w-full p-2.5 bg-white rounded-xl border border-emerald-200 text-xs text-slate-800 leading-relaxed focus:ring-2 focus:ring-emerald-400"></textarea>
+                </div>
+
+                <!-- Regret / Done Wrong & Learning -->
+                <div class="p-4 bg-rose-50/70 border border-rose-200 rounded-2xl">
+                    <label class="block text-xs font-bold text-rose-900 mb-1 flex items-center gap-1.5">
+                        <i class="ph-fill ph-warning-circle text-rose-600"></i> இன்று நான் செய்த தவறு / வருத்தம் (Regret & Learning)
+                    </label>
+                    <textarea id="journalRegret" rows="3" placeholder="இன்று நான் செய்த தவறு மற்றும் அதை நாளை எப்படி மாற்றிக் கொள்ள வேண்டும்..." class="w-full p-2.5 bg-white rounded-xl border border-rose-200 text-xs text-slate-800 leading-relaxed focus:ring-2 focus:ring-rose-400"></textarea>
+                </div>
+            </div>
+
+            <div class="mt-3 pt-3 border-t border-slate-200 flex justify-end">
+                <button onclick="saveJournalEntry()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-6 py-2.5 rounded-xl shadow-md transition flex items-center gap-1">
+                    <i class="ph-bold ph-floppy-disk"></i> சேமிக்க (Save Journal)
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== 5. HO'OPONOPONO MEDITATION MODAL ==================== -->
+    <div id="meditationModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="glass-modal w-full max-w-lg max-h-[92vh] rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 flex flex-col shadow-2xl border border-white/60">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div class="flex items-center gap-2">
+                    <i class="ph-duotone ph-heart-half text-rose-500 text-2xl"></i>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800">ஹோ'போனோபோனோ தியானம்</h2>
+                        <p class="text-xs text-slate-500">5 நிமிட சாந்தமான குரல் வழிகாட்டல்</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('meditationModal')" class="p-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"><i class="ph-bold ph-x text-lg"></i></button>
+            </div>
+
+            <!-- Meditation 5 Core Mantras Card -->
+            <div class="mt-4 p-5 bg-gradient-to-br from-rose-50 via-pink-50 to-amber-50 rounded-3xl border border-rose-200 text-center">
+                <span class="text-[10px] font-bold tracking-widest text-rose-600 uppercase">5 புனித மந்திர வரிகள்</span>
+                <div class="mt-3 space-y-2 text-sm sm:text-base font-semibold text-rose-950">
+                    <p class="p-1.5 bg-white/70 rounded-xl">1. என்னை மன்னியுங்கள் (I am sorry)</p>
+                    <p class="p-1.5 bg-white/70 rounded-xl">2. தயவுசெய்து என்னை மன்னித்து விடுங்கள் (Please forgive me)</p>
+                    <p class="p-1.5 bg-white/70 rounded-xl">3. உங்களுக்கு என் மனமார்ந்த நன்றி (Thank you)</p>
+                    <p class="p-1.5 bg-white/70 rounded-xl">4. நான் உங்களை நேசிக்கிறேன் (I love you)</p>
+                    <p class="p-1.5 bg-white/70 rounded-xl text-xs sm:text-sm font-medium text-amber-900">5. என் மனதில் அமைதியும் சமாதானமும் நிலைத்திருக்கிறது (Peace be with me)</p>
+                </div>
+            </div>
+
+            <!-- Meditation Audio Controller -->
+            <div class="mt-4 p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col items-center">
+                <div class="text-2xl font-mono font-bold text-slate-800 mb-2" id="meditationTimerDisplay">05:00</div>
+                
+                <div class="flex items-center gap-3">
+                    <button id="meditationPlayBtn" onclick="toggleMeditationAudio()" class="w-14 h-14 bg-rose-600 hover:bg-rose-700 text-white rounded-full flex items-center justify-center text-2xl shadow-lg transition transform active:scale-95">
+                        <i class="ph-fill ph-play" id="meditationPlayIcon"></i>
+                    </button>
+                    <button onclick="resetMeditationAudio()" class="p-2.5 bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-full transition" title="Reset">
+                        <i class="ph-bold ph-arrow-counter-clockwise text-base"></i>
+                    </button>
+                </div>
+
+                <!-- Ambient background zen chime toggle for meditation -->
+                <div class="mt-3 flex items-center gap-2">
+                    <input type="checkbox" id="ambientZenChimeCheck" checked class="w-3.5 h-3.5 text-rose-600 rounded">
+                    <label for="ambientZenChimeCheck" class="text-xs text-slate-600 cursor-pointer">பின்னணி சாந்தமான மணி ஒலி (Ambient Zen Chimes)</label>
+                </div>
+                
+                <p class="text-[11px] text-slate-500 mt-2 italic text-center">
+                    நீங்கள் எப்போது வேண்டுமானாலும் இந்த பிளே பட்டனை அழுத்தி 5 நிமிட சாந்தமான பெண் குரலில் ஹோ'போனோபோனோ கேட்கலாம்.
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== 6. MORNING GRATITUDE MODAL ==================== -->
+    <div id="gratitudeModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="glass-modal w-full max-w-xl max-h-[92vh] rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 flex flex-col shadow-2xl border border-white/60">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div class="flex items-center gap-2">
+                    <i class="ph-duotone ph-sun-horizon text-emerald-600 text-2xl"></i>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800">மார்னிங் கிராட்டிடியூட் (10 Points)</h2>
+                        <p class="text-xs text-slate-500">காலை எழுந்ததும் 10 நன்றியுணர்வுப் பதிவுகள்</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('gratitudeModal')" class="p-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"><i class="ph-bold ph-x text-lg"></i></button>
+            </div>
+
+            <!-- Morning Alarm Configuration Bar -->
+            <div class="mt-3 p-3 bg-emerald-50 rounded-2xl border border-emerald-200 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="ph-fill ph-alarm text-emerald-600 text-lg"></i>
+                    <span class="text-xs font-semibold text-emerald-950">காலை கிராட்டிடியூட் அலாரம் நேரம்:</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="time" id="gratitudeAlarmTime" value="05:30" onchange="saveGratitudeAlarmTime(this.value)" class="text-xs p-1.5 bg-white border border-emerald-300 rounded-xl font-bold text-emerald-900">
+                    <button onclick="testGratitudeAlarmSound()" class="p-1.5 text-emerald-700 bg-emerald-100 hover:bg-emerald-200 rounded-lg text-xs" title="Test Alarm"><i class="ph-bold ph-speaker-high"></i></button>
+                </div>
+            </div>
+
+            <!-- Date picker -->
+            <div class="mt-3 flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-600">தேதி (Date):</span>
+                <input type="date" id="gratitudeDate" onchange="loadGratitudeForDate(this.value)" class="text-xs p-1.5 bg-white border border-slate-200 rounded-xl font-medium">
+            </div>
+
+            <!-- 10 Inputs Container -->
+            <div class="flex-1 overflow-y-auto space-y-2 mt-3 pr-1" id="gratitudeInputsContainer">
+                <!-- 10 input fields created dynamically -->
+            </div>
+
+            <div class="mt-3 pt-3 border-t border-slate-200 flex justify-end">
+                <button onclick="saveGratitudeEntry()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-6 py-2.5 rounded-xl shadow-md transition flex items-center gap-1">
+                    <i class="ph-bold ph-floppy-disk"></i> சேமிக்க (Save Gratitude)
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== 7. ANALYTICS & STATS MODAL (DAILY, WEEKLY, MONTHLY) ==================== -->
+    <div id="analyticsModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="glass-modal w-full max-w-xl max-h-[92vh] rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 flex flex-col shadow-2xl border border-white/60">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div class="flex items-center gap-2">
+                    <i class="ph-duotone ph-chart-pie-slice text-indigo-600 text-2xl"></i>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800">முழுமை அனாலிசிஸ் (Growth Analytics)</h2>
+                        <p class="text-xs text-slate-500">டெய்லி, வீக்லி மற்றும் மாதாந்திர இலக்கு முன்னேற்றம்</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('analyticsModal')" class="p-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"><i class="ph-bold ph-x text-lg"></i></button>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="flex mt-3 bg-slate-100 p-1 rounded-xl">
+                <button onclick="switchAnalyticsTab('daily')" id="tabBtnDaily" class="flex-1 py-1.5 text-xs font-bold rounded-lg bg-white shadow-sm text-indigo-700">இன்றைய நிலை</button>
+                <button onclick="switchAnalyticsTab('weekly')" id="tabBtnWeekly" class="flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-600">இந்த வாரம் (Weekly)</button>
+                <button onclick="switchAnalyticsTab('monthly')" id="tabBtnMonthly" class="flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-600">இந்த மாதம் (Monthly)</button>
+            </div>
+
+            <!-- Analytics Content -->
+            <div class="flex-1 overflow-y-auto mt-4 space-y-4 pr-1" id="analyticsContentArea">
+                <!-- Populated dynamically via JS -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== 8. VISION BOARD PHOTO UPLOAD MODAL ==================== -->
+    <div id="visionUploadModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-modal w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl border border-white/60">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <h3 class="font-bold text-slate-800 text-base">விஷன் போர்டு பேக்ரவுண்ட் அமைப்புகள்</h3>
+                <button onclick="closeModal('visionUploadModal')" class="p-1 text-slate-400 hover:text-slate-700"><i class="ph-bold ph-x text-lg"></i></button>
+            </div>
+
+            <p class="text-xs text-slate-600 mt-3 leading-relaxed">
+                உங்களின் விருப்பமான 2 அல்லது 3 புகைப்படங்களை அப்லோட் செய்யுங்கள். அவை உங்கள் பின்னணியில் மெதுவாக ஒன்றன்பின் ஒன்றாக மாறிக்கொண்டே இருக்கும்.
+            </p>
+
+            <div class="mt-4 space-y-3">
+                <label class="block w-full p-4 border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-indigo-50/50 rounded-2xl text-center cursor-pointer transition">
+                    <i class="ph-duotone ph-upload-simple text-indigo-600 text-2xl"></i>
+                    <span class="block mt-1 text-xs font-semibold text-indigo-900">புகைப்படங்களைத் தேர்ந்தெடுக்கவும் (Upload Images)</span>
+                    <input type="file" id="visionImageInput" accept="image/*" multiple onchange="handleVisionImageUpload(event)" class="hidden">
+                </label>
+                <button onclick="resetDefaultVisionImages()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition">
+                    இயல்புநிலை இயற்கை வால்பேப்பர்களை வைக்க (Reset to Default)
+                </button>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-200 flex justify-end">
+                <button onclick="closeModal('visionUploadModal')" class="bg-indigo-600 text-white text-xs font-bold px-4 py-2 rounded-xl">சரி (Done)</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== 9. BULK BOOK ADD MODAL ==================== -->
+    <div id="bulkBookModal" class="fixed inset-0 z-60 hidden bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-modal w-full max-w-md rounded-3xl p-5 shadow-2xl border border-white/60">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                <h3 class="font-bold text-slate-800 text-base">மொத்த புத்தகங்களை ஆட் செய்ய</h3>
+                <button onclick="closeModal('bulkBookModal')" class="p-1 text-slate-400 hover:text-slate-700"><i class="ph-bold ph-x text-lg"></i></button>
+            </div>
+            <p class="text-xs text-slate-500 mt-2">ஒவ்வொரு வரியிலும் ஒரு புத்தகத்தின் பெயரை டைப் செய்யவும் (ஒரே நேரத்தில் பல புத்தகங்கள்):</p>
+            <textarea id="bulkBookTextarea" rows="6" placeholder="பொன்னியின் செல்வன்&#10;அணுகுண்டு மனசு&#10;Atomic Habits&#10;Ikigai" class="mt-2 w-full p-3 bg-white border border-slate-200 rounded-2xl text-xs leading-relaxed focus:ring-2 focus:ring-amber-500"></textarea>
+            <div class="mt-3 flex justify-end gap-2">
+                <button onclick="closeModal('bulkBookModal')" class="px-3 py-1.5 text-xs text-slate-600 rounded-xl hover:bg-slate-100">Cancel</button>
+                <button onclick="handleSaveBulkBooks()" class="px-4 py-2 bg-amber-600 text-white text-xs font-bold rounded-xl shadow">ஆட் செய்க (Add All)</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== 10. SINGLE / 2-MONTHLY BOOK ADD MODAL ==================== -->
+    <div id="addBookModal" class="fixed inset-0 z-60 hidden bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-modal w-full max-w-md rounded-3xl p-5 shadow-2xl border border-white/60">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                <h3 class="font-bold text-slate-800 text-base" id="addBookModalTitle">புதிய புத்தகம் சேர்க்க</h3>
+                <button onclick="closeModal('addBookModal')" class="p-1 text-slate-400 hover:text-slate-700"><i class="ph-bold ph-x text-lg"></i></button>
+            </div>
+            
+            <form onsubmit="handleSaveSingleBooks(event)" class="mt-3 space-y-3">
+                <div id="singleBookInputsContainer">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">புத்தகத்தின் பெயர் 1</label>
+                        <input type="text" id="newBookTitle1" required placeholder="Book Title..." class="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <div id="newBook2Wrapper" class="hidden mt-3">
+                        <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">புத்தகத்தின் பெயர் 2 (5-ம் தேதி இலக்கு)</label>
+                        <input type="text" id="newBookTitle2" placeholder="Book Title 2..." class="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-amber-500">
+                    </div>
+                </div>
+
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('addBookModal')" class="px-3 py-1.5 text-xs text-slate-600 rounded-xl hover:bg-slate-100">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-amber-600 text-white text-xs font-bold rounded-xl shadow">சேமிக்க (Save)</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ==================== 11. WATER SLOT CONFIGURATION MODAL ==================== -->
+    <div id="waterConfigModal" class="fixed inset-0 z-60 hidden bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-modal w-full max-w-md max-h-[85vh] rounded-3xl p-5 shadow-2xl border border-white/60 flex flex-col">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                <h3 class="font-bold text-slate-800 text-base">தண்ணீர் ஸ்லாட்டுகளை மாற்றியமைக்க</h3>
+                <button onclick="closeModal('waterConfigModal')" class="p-1 text-slate-400 hover:text-slate-700"><i class="ph-bold ph-x text-lg"></i></button>
+            </div>
+            <p class="text-xs text-slate-500 mt-2 mb-3">8 ஸ்லாட்டுகளின் நேரம் மற்றும் மில்லி அளவை (ml) உங்கள் தேவைக்கேற்ப மாற்றிக் கொள்ளலாம்:</p>
+            
+            <div class="flex-1 overflow-y-auto space-y-2 pr-1" id="waterConfigList">
+                <!-- Dynamically populated 8 slots -->
+            </div>
+
+            <div class="mt-3 pt-2 border-t border-slate-200 flex justify-end">
+                <button onclick="saveWaterSlotConfig()" class="px-4 py-2 bg-cyan-600 text-white text-xs font-bold rounded-xl shadow">சேமிக்க (Save Slots)</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ========================================================================= -->
+    <!--                             JAVASCRIPT ENGINE                             -->
+    <!-- ========================================================================= -->
+    <script>
+        // ==========================================
+        // 0. GLOBAL DATA CONSTANTS & STORAGE HELPERS
+        // ==========================================
+
+        const DEFAULT_AFFIRMATIONS = [
+            "நான் முழு அமைதியோடும் தெளிவோடும் இருக்கிறேன். இன்றைய நாள் எனக்கு மகத்தான வெற்றியைத் தரும்.",
+            "என் மனம் தெளிவானது; நான் எடுக்கும் முடிவுகள் என்னை வளர்ச்சிப் பாதையில் கொண்டு செல்லும்.",
+            "இன்று நடக்கும் அனைத்தும் என் நன்மைக்கே. நான் நன்றி உணர்வோடு வாழ்கிறேன்.",
+            "எனக்குள்ளே அமைதியும் அளப்பரிய ஆற்றலும் ஊற்றெடுத்துப் பாய்கிறது.",
+            "நேற்றைய கவலைகள் முடிந்துவிட்டன; இன்றைய புதிய நாளில் நான் புத்துணர்ச்சியோடு செயல்படுகிறேன்.",
+            "நான் செய்யும் ஒவ்வொரு செயலும் நேர்த்தியாகவும் வெற்றிகரமாகவும் முடிகிறது.",
+            "என் உடல் ஆரோக்கியமானது, என் மனம் அமைதியானது, என் ஆன்மா மகிழ்ச்சியானது.",
+            "சவால்கள் என்னை பலப்படுத்துகின்றன; நான் எல்லாவற்றையும் சமாளிக்கும் வலிமை கொண்டவன்.",
+            "என்னைச் சுற்றிலும் நேர்மறை அதிர்வுகள் மட்டுமே நிலவுகின்றன.",
+            "நான் என் நேரத்தை மதிக்கிறேன்; ஒவ்வொரு நொடியும் பயனுள்ளதாக கழிகிறது.",
+            "அன்பும் மன்னிப்பும் என் இதயத்தில் நிறைந்துள்ளன.",
+            "வாழ்க்கை எனக்குத் தரும் வாய்ப்புகளுக்கு என் மனமார்ந்த நன்றி.",
+            "நான் நிதானமாகவும், சிந்தனையோடும், உறுதியோடும் செயல்படுகிறேன்.",
+            "இன்றைய சிறு முயற்சிகள் நாளைய பெரும் வெற்றிக்கான விதைகள்.",
+            "என் குடும்பமும், என் நல்வாழ்வும் ஒவ்வொரு நாளும் ஆசீர்வதிக்கப்படுகிறது.",
+            "மன அமைதியே என் மிகப்பெரிய செல்வம். நான் எப்போதும் மகிழ்ச்சியாக இருக்கிறேன்.",
+            "நான் செய்யும் தப்புகளிலிருந்து கற்றுக்கொண்டு மேலும் முன்னேறுகிறேன்.",
+            "இன்றைய இரவு நான் அமைதியாகவும் நிம்மதியாகவும் உறங்குவேன்."
+        ];
+
+        const DEFAULT_VISION_IMAGES = [
+            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80", // Calm ocean
+            "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1600&q=80", // Misty green mountains
+            "https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=1600&q=80"  // Serene sunlit forest
+        ];
+
+        const DEFAULT_WATER_CONFIG = [
+            { id: 1, time: "06:30", amount: 300 },
+            { id: 2, time: "08:30", amount: 250 },
+            { id: 3, time: "11:00", amount: 250 },
+            { id: 4, time: "13:00", amount: 300 },
+            { id: 5, time: "15:30", amount: 250 },
+            { id: 6, time: "17:30", amount: 250 },
+            { id: 7, time: "19:30", amount: 300 },
+            { id: 8, time: "21:30", amount: 200 }
+        ];
+
+        function getTodayString() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // ==========================================
+        // 1. VISION BOARD DYNAMIC CROSS-FADER
+        // ==========================================
+        let visionImages = JSON.parse(localStorage.getItem('sanctuary_vision_images')) || DEFAULT_VISION_IMAGES;
+        let activeBgSlide = 'A';
+        let currentVisionIndex = 0;
+        let visionInterval = null;
+
+        function initVisionBoardSlider() {
+            const slideA = document.getElementById('bgSlideA');
+            const slideB = document.getElementById('bgSlideB');
+
+            slideA.style.backgroundImage = `url('${visionImages[0]}')`;
+            if (visionImages.length > 1) {
+                slideB.style.backgroundImage = `url('${visionImages[1]}')`;
+            }
+
+            if (visionInterval) clearInterval(visionInterval);
+            visionInterval = setInterval(transitionVisionSlide, 9000); // changes smoothly every 9 seconds
+        }
+
+        function transitionVisionSlide() {
+            if (visionImages.length <= 1) return;
+            const slideA = document.getElementById('bgSlideA');
+            const slideB = document.getElementById('bgSlideB');
+
+            currentVisionIndex = (currentVisionIndex + 1) % visionImages.length;
+            const nextImg = visionImages[currentVisionIndex];
+
+            if (activeBgSlide === 'A') {
+                slideB.style.backgroundImage = `url('${nextImg}')`;
+                slideB.style.opacity = '1';
+                slideA.style.opacity = '0';
+                activeBgSlide = 'B';
+            } else {
+                slideA.style.backgroundImage = `url('${nextImg}')`;
+                slideA.style.opacity = '1';
+                slideB.style.opacity = '0';
+                activeBgSlide = 'A';
+            }
+        }
+
+        function handleVisionImageUpload(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            const readers = [];
+            const newImages = [];
+
+            for (let i = 0; i < Math.min(files.length, 5); i++) {
+                readers.push(new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(files[i]);
+                }));
+            }
+
+            Promise.all(readers).then(images => {
+                visionImages = images;
+                try {
+                    localStorage.setItem('sanctuary_vision_images', JSON.stringify(images));
+                } catch (e) {
+                    console.warn("Image storage size exceeded; using session images");
+                }
+                currentVisionIndex = 0;
+                initVisionBoardSlider();
+                closeModal('visionUploadModal');
+            });
+        }
+
+        function resetDefaultVisionImages() {
+            visionImages = DEFAULT_VISION_IMAGES;
+            localStorage.removeItem('sanctuary_vision_images');
+            currentVisionIndex = 0;
+            initVisionBoardSlider();
+            closeModal('visionUploadModal');
+        }
+
+        function openVisionUploadModal() {
+            openModal('visionUploadModal');
+        }
+
+        // ==========================================
+        // 2. RANDOM NON-REPEATING AFFIRMATIONS
+        // ==========================================
+        let availableAffirmationIndices = JSON.parse(localStorage.getItem('sanctuary_aff_indices')) || [];
+
+        function cycleAffirmation(isUserClick = false) {
+            if (availableAffirmationIndices.length === 0) {
+                availableAffirmationIndices = Array.from({ length: DEFAULT_AFFIRMATIONS.length }, (_, i) => i);
+                // Shuffle array (Fisher-Yates)
+                for (let i = availableAffirmationIndices.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [availableAffirmationIndices[i], availableAffirmationIndices[j]] = [availableAffirmationIndices[j], availableAffirmationIndices[i]];
+                }
+            }
+
+            const nextIndex = availableAffirmationIndices.pop();
+            localStorage.setItem('sanctuary_aff_indices', JSON.stringify(availableAffirmationIndices));
+
+            const textElem = document.getElementById('affirmationText');
+            const countElem = document.getElementById('affirmationCount');
+
+            // Gentle opacity fade
+            textElem.style.opacity = '0';
+            setTimeout(() => {
+                textElem.innerText = `"${DEFAULT_AFFIRMATIONS[nextIndex]}"`;
+                textElem.style.opacity = '1';
+                countElem.innerText = `${DEFAULT_AFFIRMATIONS.length - availableAffirmationIndices.length} / ${DEFAULT_AFFIRMATIONS.length} Affirmation`;
+            }, 180);
+        }
+
+        // ==========================================
+        // 3. DAILY TIMETABLE (CRUD + STATUS)
+        // ==========================================
+        let timetableItems = JSON.parse(localStorage.getItem('sanctuary_timetable')) || [
+            { id: 1, time: "06:00", task: "காலை எழுந்து தியானம் & நடைப்பயிற்சி", hasAlarm: true, completedDate: "" },
+            { id: 2, time: "09:00", task: "தினசரி வேலைகளை திட்டமிடுதல்", hasAlarm: true, completedDate: "" },
+            { id: 3, time: "14:00", task: "புதிய விஷயங்களைக் கற்றுக்கொள்ளுதல்", hasAlarm: true, completedDate: "" },
+            { id: 4, time: "21:00", task: "நன்றி உணர்வு & இரவு ஜர்னல் எழுதுதல்", hasAlarm: true, completedDate: "" }
+        ];
+
+        function renderTimetable() {
+            const list = document.getElementById('timetableList');
+            list.innerHTML = '';
+            const today = getTodayString();
+
+            let doneCount = 0;
+            // Sort by time
+            timetableItems.sort((a, b) => a.time.localeCompare(b.time));
+
+            timetableItems.forEach(item => {
+                const isDone = item.completedDate === today;
+                if (isDone) doneCount++;
+
+                const row = document.createElement('div');
+                row.className = `p-3 rounded-2xl flex items-center justify-between border transition ${isDone ? 'bg-emerald-50/70 border-emerald-200' : 'bg-white border-slate-200 shadow-sm'}`;
+
+                row.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <button onclick="toggleTimetableCheck(${item.id})" class="w-6 h-6 rounded-lg flex items-center justify-center transition ${isDone ? 'bg-emerald-600 text-white' : 'border-2 border-slate-300 hover:border-emerald-500'}">
+                            ${isDone ? '<i class="ph-bold ph-check text-sm"></i>' : ''}
+                        </button>
+                        <div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[11px] font-bold px-2 py-0.5 rounded-md ${isDone ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">${item.time}</span>
+                                ${item.hasAlarm ? '<i class="ph-fill ph-bell-ringing text-[11px] text-amber-500" title="Alarm Enabled"></i>' : ''}
+                            </div>
+                            <p class="text-xs font-semibold text-slate-800 mt-0.5 ${isDone ? 'line-through text-slate-400' : ''}">${escapeHtml(item.task)}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button onclick="editTimetableItem(${item.id})" class="p-1.5 text-slate-400 hover:text-blue-600 transition"><i class="ph-bold ph-pencil-simple text-sm"></i></button>
+                        <button onclick="deleteTimetableItem(${item.id})" class="p-1.5 text-slate-400 hover:text-rose-600 transition"><i class="ph-bold ph-trash text-sm"></i></button>
+                    </div>
+                `;
+                list.appendChild(row);
+            });
+
+            document.getElementById('badgeTimetable').innerText = `${doneCount}/${timetableItems.length} Done`;
+            updateOverallAnalytics();
+        }
+
+        function toggleTimetableCheck(id) {
+            const today = getTodayString();
+            timetableItems = timetableItems.map(item => {
+                if (item.id === id) {
+                    item.completedDate = (item.completedDate === today) ? "" : today;
+                }
+                return item;
+            });
+            saveTimetable();
+        }
+
+        function handleSaveTimetable(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editTimetableId').value;
+            const time = document.getElementById('timetableTime').value;
+            const task = document.getElementById('timetableTask').value.trim();
+            const hasAlarm = document.getElementById('timetableAlarmCheck').checked;
+
+            if (!time || !task) return;
+
+            if (editId) {
+                timetableItems = timetableItems.map(item => item.id == editId ? { ...item, time, task, hasAlarm } : item);
+            } else {
+                timetableItems.push({
+                    id: Date.now(),
+                    time,
+                    task,
+                    hasAlarm,
+                    completedDate: ""
+                });
+            }
+
+            saveTimetable();
+            resetTimetableForm();
+        }
+
+        function editTimetableItem(id) {
+            const item = timetableItems.find(t => t.id === id);
+            if (!item) return;
+            document.getElementById('editTimetableId').value = item.id;
+            document.getElementById('timetableTime').value = item.time;
+            document.getElementById('timetableTask').value = item.task;
+            document.getElementById('timetableAlarmCheck').checked = item.hasAlarm !== false;
+            document.getElementById('saveTimetableBtn').innerHTML = '<i class="ph-bold ph-check"></i> Update Task';
+            document.getElementById('cancelEditTimetableBtn').classList.remove('hidden');
+        }
+
+        function resetTimetableForm() {
+            document.getElementById('editTimetableId').value = '';
+            document.getElementById('timetableTime').value = '';
+            document.getElementById('timetableTask').value = '';
+            document.getElementById('timetableAlarmCheck').checked = true;
+            document.getElementById('saveTimetableBtn').innerHTML = '<i class="ph-bold ph-plus"></i> Add to Timetable';
+            document.getElementById('cancelEditTimetableBtn').classList.add('hidden');
+        }
+
+        function deleteTimetableItem(id) {
+            timetableItems = timetableItems.filter(t => t.id !== id);
+            saveTimetable();
+        }
+
+        function saveTimetable() {
+            localStorage.setItem('sanctuary_timetable', JSON.stringify(timetableItems));
+            renderTimetable();
+        }
+
+        // ==========================================
+        // 4. WATER TRACKER (8 SLOTS + LOGS & ALARMS)
+        // ==========================================
+        let waterSlotsConfig = JSON.parse(localStorage.getItem('sanctuary_water_config')) || DEFAULT_WATER_CONFIG;
+        let waterLogs = JSON.parse(localStorage.getItem('sanctuary_water_logs')) || {}; 
+        let waterAlarmsEnabled = JSON.parse(localStorage.getItem('sanctuary_water_alarms')) !== false;
+
+        function toggleWaterAlarms() {
+            waterAlarmsEnabled = !waterAlarmsEnabled;
+            localStorage.setItem('sanctuary_water_alarms', JSON.stringify(waterAlarmsEnabled));
+            updateWaterAlarmBtnUI();
+        }
+
+        function updateWaterAlarmBtnUI() {
+            const statusTxt = document.getElementById('waterAlarmStatusText');
+            if (waterAlarmsEnabled) {
+                statusTxt.innerText = "8 Alarms Active";
+            } else {
+                statusTxt.innerText = "Alarms Muted";
+            }
+        }
+
+        function renderWaterTracker(selectedDate = null) {
+            const date = selectedDate || getTodayString();
+            document.getElementById('waterHistoryDate').value = date;
+            const completedSlotIds = waterLogs[date] || [];
+
+            const container = document.getElementById('waterSlotsList');
+            container.innerHTML = '';
+
+            let totalDrunk = 0;
+            let targetTotal = 0;
+
+            waterSlotsConfig.forEach(slot => {
+                targetTotal += slot.amount;
+                const isChecked = completedSlotIds.includes(slot.id);
+                if (isChecked) totalDrunk += slot.amount;
+
+                const row = document.createElement('div');
+                row.className = `p-3 rounded-2xl flex items-center justify-between border transition ${isChecked ? 'bg-cyan-50/80 border-cyan-300' : 'bg-white border-slate-200'}`;
+                row.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <button onclick="toggleWaterSlot(${slot.id}, '${date}')" class="w-8 h-8 rounded-xl flex items-center justify-center transition ${isChecked ? 'bg-cyan-600 text-white shadow-sm' : 'border-2 border-slate-300 hover:border-cyan-400 text-slate-400'}">
+                            <i class="ph-bold ph-drop text-base"></i>
+                        </button>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold text-slate-800">ஸ்லாட் ${slot.id}</span>
+                                <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-semibold">${slot.time}</span>
+                                <i class="ph-fill ph-bell text-[10px] text-cyan-600" title="Alarm will ring at ${slot.time}"></i>
+                            </div>
+                            <span class="text-xs text-slate-500 font-medium">${slot.amount} ml அளவு</span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold ${isChecked ? 'text-cyan-700' : 'text-slate-400'}">
+                        ${isChecked ? '✓ குடித்தாச்சு' : 'குடிக்கவும்'}
+                    </span>
+                `;
+                container.appendChild(row);
+            });
+
+            const completedCount = completedSlotIds.length;
+            document.getElementById('waterSummary').innerText = `${completedCount} / 8 முடிந்தது (${totalDrunk} ml / ${targetTotal} ml)`;
+            updateWaterAlarmBtnUI();
+            
+            if (date === getTodayString()) {
+                document.getElementById('badgeWater').innerText = `${completedCount}/8 Cups`;
+            }
+
+            updateOverallAnalytics();
+        }
+
+        function toggleWaterSlot(slotId, date) {
+            if (!waterLogs[date]) waterLogs[date] = [];
+            const index = waterLogs[date].indexOf(slotId);
+
+            if (index > -1) {
+                waterLogs[date].splice(index, 1);
+            } else {
+                waterLogs[date].push(slotId);
+            }
+
+            localStorage.setItem('sanctuary_water_logs', JSON.stringify(waterLogs));
+            renderWaterTracker(date);
+        }
+
+        function openWaterSlotConfig() {
+            const container = document.getElementById('waterConfigList');
+            container.innerHTML = '';
+
+            waterSlotsConfig.forEach((slot, i) => {
+                const item = document.createElement('div');
+                item.className = "flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200";
+                item.innerHTML = `
+                    <span class="text-xs font-bold w-12 text-slate-600">Slot ${slot.id}:</span>
+                    <input type="time" value="${slot.time}" id="cfgTime_${slot.id}" class="text-xs p-1 bg-white border border-slate-300 rounded-lg">
+                    <input type="number" value="${slot.amount}" id="cfgAmt_${slot.id}" class="text-xs p-1 w-20 bg-white border border-slate-300 rounded-lg" placeholder="ml">
+                    <span class="text-xs text-slate-500">ml</span>
+                `;
+                container.appendChild(item);
+            });
+
+            openModal('waterConfigModal');
+        }
+
+        function saveWaterSlotConfig() {
+            waterSlotsConfig.forEach(slot => {
+                const timeVal = document.getElementById(`cfgTime_${slot.id}`).value;
+                const amtVal = parseInt(document.getElementById(`cfgAmt_${slot.id}`).value);
+                if (timeVal) slot.time = timeVal;
+                if (amtVal && amtVal > 0) slot.amount = amtVal;
+            });
+
+            localStorage.setItem('sanctuary_water_config', JSON.stringify(waterSlotsConfig));
+            closeModal('waterConfigModal');
+            renderWaterTracker();
+        }
+
+        // ==========================================
+        // 5. BOOK STUDIO (BULK ADD, 5TH PROMPT, NOTES)
+        // ==========================================
+        let booksList = JSON.parse(localStorage.getItem('sanctuary_books')) || [
+            {
+                id: 1,
+                title: "அணுகுண்டு மனசு (Atomic Habits)",
+                currentPage: 64,
+                totalPages: 280,
+                startDate: "2026-11-01",
+                endDate: "",
+                notes: "சிறிய 1% முன்னேற்றங்கள் கூட நாளடைவில் மிகப்பெரிய மாற்றத்தை உருவாக்கும்."
+            }
+        ];
+
+        function check5thOfMonthRule() {
+            const today = new Date();
+            const dayOfMonth = today.getDate();
+            const currentYearMonth = `${today.getFullYear()}-${today.getMonth() + 1}`;
+            const lastDismissedPrompt = localStorage.getItem('sanctuary_book_5th_dismissed');
+
+            const badge = document.getElementById('month5thBadge');
+            const reminderBanner = document.getElementById('monthly5thReminderBanner');
+
+            // If day is on or after 5th, prompt for 2 new purchased books
+            if (dayOfMonth >= 5 && lastDismissedPrompt !== currentYearMonth) {
+                badge.classList.remove('hidden');
+                reminderBanner.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+                reminderBanner.classList.add('hidden');
+            }
+        }
+
+        function renderBooks() {
+            const container = document.getElementById('booksCardsContainer');
+            container.innerHTML = '';
+
+            if (booksList.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-8 text-center text-slate-400 text-xs">
+                        புத்தகங்கள் எதுவும் சேர்க்கப்படவில்லை. மேலே உள்ள பட்டனைப் பயன்படுத்தி புத்தகங்களைச் சேர்க்கவும்.
+                    </div>
+                `;
+            } else {
+                booksList.forEach(book => {
+                    const percent = book.totalPages > 0 ? Math.min(100, Math.round((book.currentPage / book.totalPages) * 100)) : 0;
+                    const isDone = percent >= 100;
+
+                    const card = document.createElement('div');
+                    card.className = "p-3.5 bg-white rounded-2xl border border-slate-200 hover:border-amber-400 shadow-sm cursor-pointer hover:shadow-md transition flex flex-col justify-between";
+                    card.onclick = () => openBookDetails(book.id);
+
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex items-start justify-between gap-1">
+                                <h4 class="text-xs font-bold text-slate-800 line-clamp-1">${escapeHtml(book.title)}</h4>
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${isDone ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                                    ${percent}%
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mt-1">பக்கம்: ${book.currentPage} / ${book.totalPages}</p>
+                            
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
+                                <div class="bg-amber-500 h-1.5 rounded-full" style="width: ${percent}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+                            <span>${book.startDate ? 'Start: ' + book.startDate : 'வாசிக்கத் தொடங்கு'}</span>
+                            <span class="text-amber-700 font-semibold flex items-center gap-0.5">குறிப்புகள் <i class="ph-bold ph-caret-right"></i></span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
+            document.getElementById('badgeBooks').innerText = `${booksList.length} Books`;
+        }
+
+        function openBookDetails(id) {
+            const book = booksList.find(b => b.id === id);
+            if (!book) return;
+
+            document.getElementById('detailBookId').value = book.id;
+            document.getElementById('detailBookTitle').innerText = book.title;
+            document.getElementById('detailCurrentPage').value = book.currentPage || 0;
+            document.getElementById('detailTotalPages').value = book.totalPages || 100;
+            document.getElementById('detailStartDate').value = book.startDate || '';
+            document.getElementById('detailEndDate').value = book.endDate || '';
+            document.getElementById('detailNotes').value = book.notes || '';
+
+            updateBookDetailProgress();
+            openModal('bookDetailModal');
+        }
+
+        function updateBookDetailProgress() {
+            const cur = parseInt(document.getElementById('detailCurrentPage').value) || 0;
+            const tot = parseInt(document.getElementById('detailTotalPages').value) || 1;
+            const percent = Math.min(100, Math.round((cur / tot) * 100));
+
+            document.getElementById('detailProgressPercentage').innerText = `${percent}%`;
+            document.getElementById('detailProgressBar').style.width = `${percent}%`;
+        }
+
+        document.getElementById('detailCurrentPage').addEventListener('input', updateBookDetailProgress);
+        document.getElementById('detailTotalPages').addEventListener('input', updateBookDetailProgress);
+
+        function handleSaveBookDetails() {
+            const bookId = parseInt(document.getElementById('detailBookId').value);
+            const cur = parseInt(document.getElementById('detailCurrentPage').value) || 0;
+            const tot = parseInt(document.getElementById('detailTotalPages').value) || 0;
+            const start = document.getElementById('detailStartDate').value;
+            const end = document.getElementById('detailEndDate').value;
+            const notes = document.getElementById('detailNotes').value;
+
+            booksList = booksList.map(b => {
+                if (b.id === bookId) {
+                    return {
+                        ...b,
+                        currentPage: cur,
+                        totalPages: tot,
+                        startDate: start,
+                        endDate: end,
+                        notes: notes
+                    };
+                }
+                return b;
+            });
+
+            localStorage.setItem('sanctuary_books', JSON.stringify(booksList));
+            renderBooks();
+            closeModal('bookDetailModal');
+        }
+
+        function handleDeleteCurrentBook() {
+            const bookId = parseInt(document.getElementById('detailBookId').value);
+            booksList = booksList.filter(b => b.id !== bookId);
+            localStorage.setItem('sanctuary_books', JSON.stringify(booksList));
+            renderBooks();
+            closeModal('bookDetailModal');
+        }
+
+        function openBulkBookModal() {
+            document.getElementById('bulkBookTextarea').value = '';
+            openModal('bulkBookModal');
+        }
+
+        function handleSaveBulkBooks() {
+            const raw = document.getElementById('bulkBookTextarea').value.trim();
+            if (!raw) return;
+
+            const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            lines.forEach(name => {
+                booksList.push({
+                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    title: name,
+                    currentPage: 0,
+                    totalPages: 200,
+                    startDate: getTodayString(),
+                    endDate: "",
+                    notes: ""
+                });
+            });
+
+            localStorage.setItem('sanctuary_books', JSON.stringify(booksList));
+            renderBooks();
+            closeModal('bulkBookModal');
+        }
+
+        function openAddBookModal(isMonthlyPrompt = false) {
+            document.getElementById('newBookTitle1').value = '';
+            document.getElementById('newBookTitle2').value = '';
+            const book2Wrapper = document.getElementById('newBook2Wrapper');
+            const title = document.getElementById('addBookModalTitle');
+
+            if (isMonthlyPrompt) {
+                title.innerText = "5-ம் தேதி: இந்த மாதம் வாங்கிய 2 புத்தகங்கள்";
+                book2Wrapper.classList.remove('hidden');
+                document.getElementById('newBookTitle2').required = true;
+            } else {
+                title.innerText = "புதிய புத்தகம் சேர்க்க";
+                book2Wrapper.classList.add('hidden');
+                document.getElementById('newBookTitle2').required = false;
+            }
+
+            openModal('addBookModal');
+        }
+
+        function handleSaveSingleBooks(e) {
+            e.preventDefault();
+            const title1 = document.getElementById('newBookTitle1').value.trim();
+            const title2 = document.getElementById('newBookTitle2').value.trim();
+
+            if (title1) {
+                booksList.push({
+                    id: Date.now(),
+                    title: title1,
+                    currentPage: 0,
+                    totalPages: 250,
+                    startDate: getTodayString(),
+                    endDate: "",
+                    notes: ""
+                });
+            }
+
+            if (title2) {
+                booksList.push({
+                    id: Date.now() + 1,
+                    title: title2,
+                    currentPage: 0,
+                    totalPages: 250,
+                    startDate: getTodayString(),
+                    endDate: "",
+                    notes: ""
+                });
+            }
+
+            // Dismiss monthly prompt badge for this month
+            const today = new Date();
+            const currentYearMonth = `${today.getFullYear()}-${today.getMonth() + 1}`;
+            localStorage.setItem('sanctuary_book_5th_dismissed', currentYearMonth);
+            check5thOfMonthRule();
+
+            localStorage.setItem('sanctuary_books', JSON.stringify(booksList));
+            renderBooks();
+            closeModal('addBookModal');
+        }
+
+        // ==========================================
+        // 6. PLEASURE & REGRET JOURNAL (9 PM ALARM)
+        // ==========================================
+        let journalEntries = JSON.parse(localStorage.getItem('sanctuary_journal')) || {};
+
+        function loadJournalForDate(date) {
+            const targetDate = date || getTodayString();
+            document.getElementById('journalDate').value = targetDate;
+            const data = journalEntries[targetDate] || { pleasure: '', regret: '' };
+            document.getElementById('journalPleasure').value = data.pleasure || '';
+            document.getElementById('journalRegret').value = data.regret || '';
+        }
+
+        function saveJournalEntry() {
+            const date = document.getElementById('journalDate').value || getTodayString();
+            const pleasure = document.getElementById('journalPleasure').value.trim();
+            const regret = document.getElementById('journalRegret').value.trim();
+
+            journalEntries[date] = { pleasure, regret };
+            localStorage.setItem('sanctuary_journal', JSON.stringify(journalEntries));
+            updateOverallAnalytics();
+            closeModal('journalModal');
+        }
+
+        // =========================================================================
+        // MULTI-ALARM NOTIFICATION & CHIME ENGINE (AUDIO + VOICE + NOTIFICATION)
+        // =========================================================================
+        let audioContext = null;
+
+        function getAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            return audioContext;
+        }
+
+        function playChimeSound(type = 'zen') {
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+
+                if (type === 'zen' || type === 'meditation') {
+                    // Soft warm harmonic gong / singing bowl chime
+                    [528, 660, 792].forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.15);
+                        gain.gain.setValueAtTime(0.2, now + idx * 0.15);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.15 + 2.0);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + idx * 0.15);
+                        osc.stop(now + idx * 0.15 + 2.0);
+                    });
+                } else {
+                    // Crisp 2-tone melodic alert chime
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(587.33, now); // D5
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.35); // A5
+                    gain.gain.setValueAtTime(0.28, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 1.2);
+                }
+            } catch (e) {
+                console.log("AudioContext chime not available", e);
+            }
+        }
+
+        function speakAnnouncement(text) {
+            if ('speechSynthesis' in window) {
+                try {
+                    window.speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.rate = 0.85;
+                    utterance.pitch = 1.05;
+                    const voices = window.speechSynthesis.getVoices();
+                    const femaleVoice = voices.find(v => (v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Samantha') || v.lang.startsWith('ta') || v.lang.startsWith('en')));
+                    if (femaleVoice) utterance.voice = femaleVoice;
+                    window.speechSynthesis.speak(utterance);
+                } catch(e) {
+                    console.warn(e);
+                }
+            }
+        }
+
+        function triggerAlarm(title, message) {
+            playChimeSound('alert');
+            speakAnnouncement(title);
+
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(title, {
+                    body: message,
+                    icon: "https://placehold.co/128x128/6366f1/ffffff?text=Alarm"
+                });
+            }
+        }
+
+        function requestAllPermissionsAndTestAlarm() {
+            getAudioContext();
+            playChimeSound('alert');
+
+            if ("Notification" in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        new Notification("அலாரங்கள் தயார்!", {
+                            body: "தண்ணீர், டைம் டேபிள், கிராட்டிடியூட் மற்றும் ஜர்னல் அலாரங்கள் வெற்றிகரமாக இயக்கப்பட்டுள்ளன.",
+                            icon: "https://placehold.co/128x128/10b981/ffffff?text=OK"
+                        });
+                        document.getElementById('globalAlarmBtnText').innerText = "அலாரம் ஆக்டிவ்";
+                    }
+                });
+            } else {
+                alert("Browser notifications not supported, but sound chimes will ring smoothly.");
+            }
+        }
+
+        function enableAlarmNotification() {
+            requestAllPermissionsAndTestAlarm();
+        }
+
+        // ==========================================
+        // 7. HO'OPONOPONO ON-DEMAND VOICE & ZEN CHIMES
+        // ==========================================
+        const HOOPONOPONO_PHRASES = [
+            "என்னை மன்னியுங்கள். I am sorry.",
+            "தயவுசெய்து என்னை மன்னித்து விடுங்கள். Please forgive me.",
+            "உங்களுக்கு என் மனமார்ந்த நன்றி. Thank you.",
+            "நான் உங்களை நேசிக்கிறேன். I love you.",
+            "என் மனதில் அமைதியும் சமாதானமும் என்றும் நிலைத்திருக்கிறது."
+        ];
+
+        let meditationTimer = null;
+        let meditationSecondsRemaining = 300; // 5 minutes
+        let isMeditationPlaying = false;
+        let ambientChimeInterval = null;
+
+        function updateMeditationTimerDisplay() {
+            const mins = Math.floor(meditationSecondsRemaining / 60);
+            const secs = meditationSecondsRemaining % 60;
+            document.getElementById('meditationTimerDisplay').innerText = 
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function speakPhraseLoop() {
+            if (!isMeditationPlaying || meditationSecondsRemaining <= 0) return;
+
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const textToSpeak = HOOPONOPONO_PHRASES.join(". ... ");
+                const utterance = new SpeechSynthesisUtterance(textToSpeak);
+
+                utterance.rate = 0.75; // Soft calm cadence
+                utterance.pitch = 1.05;
+
+                const voices = window.speechSynthesis.getVoices();
+                const femaleVoice = voices.find(v => (v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Samantha') || v.name.includes('Google') || v.lang.startsWith('ta') || v.lang.startsWith('en')));
+                if (femaleVoice) utterance.voice = femaleVoice;
+
+                utterance.onend = () => {
+                    if (isMeditationPlaying && meditationSecondsRemaining > 0) {
+                        setTimeout(speakPhraseLoop, 3500);
+                    }
+                };
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function toggleMeditationAudio() {
+            const icon = document.getElementById('meditationPlayIcon');
+            getAudioContext(); // Warm up Web Audio
+
+            if (!isMeditationPlaying) {
+                isMeditationPlaying = true;
+                icon.className = "ph-fill ph-pause";
+                
+                // Play immediate gentle chime
+                playChimeSound('zen');
+                speakPhraseLoop();
+
+                // Periodic ambient background chimes during meditation if checked
+                ambientChimeInterval = setInterval(() => {
+                    const ambientCheck = document.getElementById('ambientZenChimeCheck');
+                    if (ambientCheck && ambientCheck.checked && isMeditationPlaying) {
+                        playChimeSound('zen');
+                    }
+                }, 14000);
+
+                meditationTimer = setInterval(() => {
+                    meditationSecondsRemaining--;
+                    updateMeditationTimerDisplay();
+
+                    if (meditationSecondsRemaining <= 0) {
+                        resetMeditationAudio();
+                        playChimeSound('zen');
+                    }
+                }, 1000);
+            } else {
+                isMeditationPlaying = false;
+                icon.className = "ph-fill ph-play";
+                clearInterval(meditationTimer);
+                if (ambientChimeInterval) clearInterval(ambientChimeInterval);
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            }
+        }
+
+        function resetMeditationAudio() {
+            isMeditationPlaying = false;
+            clearInterval(meditationTimer);
+            if (ambientChimeInterval) clearInterval(ambientChimeInterval);
+            meditationSecondsRemaining = 300;
+            updateMeditationTimerDisplay();
+            document.getElementById('meditationPlayIcon').className = "ph-fill ph-play";
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        }
+
+        // ==========================================
+        // 8. MORNING GRATITUDE (10 POINTS TRACKER)
+        // ==========================================
+        let gratitudeEntries = JSON.parse(localStorage.getItem('sanctuary_gratitude')) || {};
+        let gratitudeAlarmTime = localStorage.getItem('sanctuary_gratitude_alarm') || "05:30";
+
+        function saveGratitudeAlarmTime(timeVal) {
+            gratitudeAlarmTime = timeVal;
+            localStorage.setItem('sanctuary_gratitude_alarm', timeVal);
+        }
+
+        function testGratitudeAlarmSound() {
+            triggerAlarm("காலை நன்றியுணர்வு நேரம்!", "இன்றைய 10 நன்றியுணர்வு வரிகளை எழுத வேண்டிய நேரம் இது.");
+        }
+
+        function renderGratitudeInputs(date) {
+            const targetDate = date || getTodayString();
+            document.getElementById('gratitudeDate').value = targetDate;
+            document.getElementById('gratitudeAlarmTime').value = gratitudeAlarmTime;
+            const container = document.getElementById('gratitudeInputsContainer');
+            container.innerHTML = '';
+
+            const savedPoints = gratitudeEntries[targetDate] || [];
+
+            for (let i = 1; i <= 10; i++) {
+                const val = savedPoints[i - 1] || '';
+                const row = document.createElement('div');
+                row.className = "flex items-center gap-2";
+                row.innerHTML = `
+                    <span class="w-6 text-xs font-bold text-emerald-800 text-right">${i}.</span>
+                    <input type="text" id="gratitudePoint_${i}" value="${escapeHtml(val)}" placeholder="நன்றி உணர்வு ${i}..." class="flex-1 p-2 bg-white rounded-xl border border-emerald-100 text-xs focus:ring-2 focus:ring-emerald-400">
+                `;
+                container.appendChild(row);
+            }
+        }
+
+        function loadGratitudeForDate(date) {
+            renderGratitudeInputs(date);
+        }
+
+        function saveGratitudeEntry() {
+            const date = document.getElementById('gratitudeDate').value || getTodayString();
+            const points = [];
+
+            for (let i = 1; i <= 10; i++) {
+                const input = document.getElementById(`gratitudePoint_${i}`);
+                if (input && input.value.trim()) {
+                    points.push(input.value.trim());
+                }
+            }
+
+            gratitudeEntries[date] = points;
+            localStorage.setItem('sanctuary_gratitude', JSON.stringify(gratitudeEntries));
+            updateOverallAnalytics();
+            closeModal('gratitudeModal');
+        }
+
+        // =========================================================================
+        // GLOBAL TIME-TICK SCHEDULER: CHECK WATER, TIMETABLE, GRATITUDE, 9PM JOURNAL
+        // =========================================================================
+        let triggeredTimestamps = {};
+
+        setInterval(() => {
+            const now = new Date();
+            const currentHHMM = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            const todayStr = getTodayString();
+            const triggerKey = `${todayStr}_${currentHHMM}`;
+
+            if (triggeredTimestamps[triggerKey]) return; // already fired this minute
+
+            // 1. Water Tracker Alarms (8 slots)
+            if (waterAlarmsEnabled) {
+                const matchedWaterSlot = waterSlotsConfig.find(slot => slot.time === currentHHMM);
+                if (matchedWaterSlot) {
+                    triggeredTimestamps[triggerKey] = true;
+                    triggerAlarm(
+                        `தண்ணீர் குடிக்கும் நேரம்! (${matchedWaterSlot.amount} ml)`,
+                        `ஸ்லாட் ${matchedWaterSlot.id}: தயவுசெய்து ஒரு கிளாஸ் தண்ணீர் குடிக்கவும்.`
+                    );
+                    return;
+                }
+            }
+
+            // 2. Timetable Tasks Alarms
+            const matchedTask = timetableItems.find(task => task.time === currentHHMM && task.hasAlarm !== false);
+            if (matchedTask && matchedTask.completedDate !== todayStr) {
+                triggeredTimestamps[triggerKey] = true;
+                triggerAlarm(
+                    `டைம் டேபிள் பணி நேரம்: ${matchedTask.time}`,
+                    matchedTask.task
+                );
+                return;
+            }
+
+            // 3. Morning Gratitude Alarm
+            if (currentHHMM === gratitudeAlarmTime) {
+                const todayPoints = gratitudeEntries[todayStr] || [];
+                if (todayPoints.length < 5) {
+                    triggeredTimestamps[triggerKey] = true;
+                    triggerAlarm(
+                        "காலை நன்றியுணர்வு நேரம்!",
+                        "காலை 10 நன்றியுணர்வு வரிகளைப் பதிவு செய்ய வேண்டிய நேரம் இது."
+                    );
+                    return;
+                }
+            }
+
+            // 4. Night 9:00 PM Pleasure & Regret Journal Alarm
+            if (currentHHMM === "21:00") {
+                triggeredTimestamps[triggerKey] = true;
+                triggerAlarm(
+                    "இரவு 9:00 மணி சுயபரிசோதனை நேரம்!",
+                    "இன்று நீங்கள் செய்த சரியான விஷயம் மற்றும் வருத்தங்களை பதிவு செய்ய வேண்டிய நேரம் இது."
+                );
+                return;
+            }
+        }, 15000); // Check every 15 seconds
+
+
+        function loadJournalForDate(date) {
+            const targetDate = date || getTodayString();
+            document.getElementById('journalDate').value = targetDate;
+            const data = journalEntries[targetDate] || { pleasure: '', regret: '' };
+            document.getElementById('journalPleasure').value = data.pleasure || '';
+            document.getElementById('journalRegret').value = data.regret || '';
+        }
+
+        function saveJournalEntry() {
+            const date = document.getElementById('journalDate').value || getTodayString();
+            const pleasure = document.getElementById('journalPleasure').value.trim();
+            const regret = document.getElementById('journalRegret').value.trim();
+
+            journalEntries[date] = { pleasure, regret };
+            localStorage.setItem('sanctuary_journal', JSON.stringify(journalEntries));
+            updateOverallAnalytics();
+            closeModal('journalModal');
+        }
+
+        // 9:00 PM Alarm chime and check
+        function playChimeSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.4); // A5
+
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.2);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 1.2);
+            } catch (e) {
+                console.log("AudioContext chime not available");
+            }
+        }
+
+        function enableAlarmNotification() {
+            playChimeSound();
+            if ("Notification" in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        new Notification("இரவு 9:00 மணி ஜர்னல் நேரம்!", {
+                            body: "இன்று நீங்கள் செய்த சரியான விஷயம் மற்றும் வருத்தங்களை பதிவு செய்ய வேண்டிய நேரம் இது.",
+                            icon: "https://placehold.co/100x100/6366f1/ffffff?text=Alarm"
+                        });
+                    }
+                });
+            }
+        }
+
+        // Background interval checking for 9:00 PM
+        let alarmTriggeredToday = false;
+        setInterval(() => {
+            const now = new Date();
+            if (now.getHours() === 21 && now.getMinutes() === 0 && !alarmTriggeredToday) {
+                alarmTriggeredToday = true;
+                playChimeSound();
+                if ("Notification" in window && Notification.permission === "granted") {
+                    new Notification("இரவு 9:00 மணி ஜர்னல் நேரம்!", {
+                        body: "இன்று நீங்கள் செய்த சரியான விஷயம் மற்றும் வருத்தங்களை எழுதவும்."
+                    });
+                }
+            }
+            if (now.getHours() === 22) alarmTriggeredToday = false;
+        }, 30000);
+
+        // ==========================================
+        // 7. HO'OPONOPONO 5-MINUTE GUIDED VOICE
+        // ==========================================
+        const HOOPONOPONO_PHRASES = [
+            "என்னை மன்னியுங்கள். I am sorry.",
+            "தயவுசெய்து என்னை மன்னித்து விடுங்கள். Please forgive me.",
+            "உங்களுக்கு என் மனமார்ந்த நன்றி. Thank you.",
+            "நான் உங்களை நேசிக்கிறேன். I love you.",
+            "என் மனதில் அமைதியும் சமாதானமும் என்றும் நிலைத்திருக்கிறது."
+        ];
+
+        let meditationTimer = null;
+        let meditationSecondsRemaining = 300; // 5 minutes
+        let isMeditationPlaying = false;
+        let voiceSpeech = null;
+
+        function updateMeditationTimerDisplay() {
+            const mins = Math.floor(meditationSecondsRemaining / 60);
+            const secs = meditationSecondsRemaining % 60;
+            document.getElementById('meditationTimerDisplay').innerText = 
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function speakPhraseLoop() {
+            if (!isMeditationPlaying || meditationSecondsRemaining <= 0) return;
+
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+
+                // Join mantras with calm breathing pauses
+                const textToSpeak = HOOPONOPONO_PHRASES.join(". ... ");
+                const utterance = new SpeechSynthesisUtterance(textToSpeak);
+
+                // Set pitch and slow serene pace
+                utterance.rate = 0.78; // Slow mode as requested
+                utterance.pitch = 1.05; // Softer pitch
+
+                // Find female voice if available
+                const voices = window.speechSynthesis.getVoices();
+                const femaleVoice = voices.find(v => (v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Samantha') || v.name.includes('Google') || v.lang.startsWith('ta') || v.lang.startsWith('en')));
+                if (femaleVoice) {
+                    utterance.voice = femaleVoice;
+                }
+
+                utterance.onend = () => {
+                    if (isMeditationPlaying && meditationSecondsRemaining > 0) {
+                        // Wait 3.5 seconds before whispering again
+                        setTimeout(speakPhraseLoop, 3500);
+                    }
+                };
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function toggleMeditationAudio() {
+            const icon = document.getElementById('meditationPlayIcon');
+
+            if (!isMeditationPlaying) {
+                isMeditationPlaying = true;
+                icon.className = "ph-fill ph-pause";
+                speakPhraseLoop();
+
+                meditationTimer = setInterval(() => {
+                    meditationSecondsRemaining--;
+                    updateMeditationTimerDisplay();
+
+                    if (meditationSecondsRemaining <= 0) {
+                        resetMeditationAudio();
+                        playChimeSound();
+                    }
+                }, 1000);
+            } else {
+                isMeditationPlaying = false;
+                icon.className = "ph-fill ph-play";
+                clearInterval(meditationTimer);
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            }
+        }
+
+        function resetMeditationAudio() {
+            isMeditationPlaying = false;
+            clearInterval(meditationTimer);
+            meditationSecondsRemaining = 300;
+            updateMeditationTimerDisplay();
+            document.getElementById('meditationPlayIcon').className = "ph-fill ph-play";
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        }
+
+        // ==========================================
+        // 8. MORNING GRATITUDE (10 POINTS TRACKER)
+        // ==========================================
+        let gratitudeEntries = JSON.parse(localStorage.getItem('sanctuary_gratitude')) || {};
+        // structure: { '2026-11-26': ['point 1', 'point 2', ...] }
+
+        function renderGratitudeInputs(date) {
+            const targetDate = date || getTodayString();
+            document.getElementById('gratitudeDate').value = targetDate;
+            const container = document.getElementById('gratitudeInputsContainer');
+            container.innerHTML = '';
+
+            const savedPoints = gratitudeEntries[targetDate] || [];
+
+            for (let i = 1; i <= 10; i++) {
+                const val = savedPoints[i - 1] || '';
+                const row = document.createElement('div');
+                row.className = "flex items-center gap-2";
+                row.innerHTML = `
+                    <span class="w-6 text-xs font-bold text-emerald-800 text-right">${i}.</span>
+                    <input type="text" id="gratitudePoint_${i}" value="${escapeHtml(val)}" placeholder="நன்றி உணர்வு ${i}..." class="flex-1 p-2 bg-white rounded-xl border border-emerald-100 text-xs focus:ring-2 focus:ring-emerald-400">
+                `;
+                container.appendChild(row);
+            }
+        }
+
+        function loadGratitudeForDate(date) {
+            renderGratitudeInputs(date);
+        }
+
+        function saveGratitudeEntry() {
+            const date = document.getElementById('gratitudeDate').value || getTodayString();
+            const points = [];
+
+            for (let i = 1; i <= 10; i++) {
+                const input = document.getElementById(`gratitudePoint_${i}`);
+                if (input && input.value.trim()) {
+                    points.push(input.value.trim());
+                }
+            }
+
+            gratitudeEntries[date] = points;
+            localStorage.setItem('sanctuary_gratitude', JSON.stringify(gratitudeEntries));
+            updateOverallAnalytics();
+            closeModal('gratitudeModal');
+        }
+
+        // ==========================================
+        // 9. OVERALL ANALYTICS (DAILY, WEEKLY, MONTHLY)
+        // ==========================================
+        function calculateDailyScore(date) {
+            let score = 0;
+            let total = 4; // 1. Timetable, 2. Water, 3. Gratitude, 4. Journal
+
+            // 1. Timetable completion
+            const timetableDone = timetableItems.some(t => t.completedDate === date);
+            if (timetableDone) score += 1;
+
+            // 2. Water tracker (at least 6 slots of 8)
+            const waterDone = (waterLogs[date] && waterLogs[date].length >= 6);
+            if (waterDone) score += 1;
+
+            // 3. Gratitude (at least 5 points)
+            const gratitudeDone = (gratitudeEntries[date] && gratitudeEntries[date].length >= 5);
+            if (gratitudeDone) score += 1;
+
+            // 4. Night Journal
+            const journalDone = (journalEntries[date] && (journalEntries[date].pleasure || journalEntries[date].regret));
+            if (journalDone) score += 1;
+
+            return { score, total, percentage: Math.round((score / total) * 100) };
+        }
+
+        function updateOverallAnalytics() {
+            const today = getTodayString();
+            const result = calculateDailyScore(today);
+
+            const progressBar = document.getElementById('overallProgressBar');
+            const percentLabel = document.getElementById('overallPercentage');
+            const breakdownLabel = document.getElementById('todayBreakdown');
+
+            progressBar.style.width = `${result.percentage}%`;
+            percentLabel.innerText = `${result.percentage}%`;
+            breakdownLabel.innerText = `${result.score}/${result.total} பகுதிகள் நிறைவடைந்தது`;
+
+            const gratPoints = (gratitudeEntries[today] || []).length;
+            document.getElementById('badgeGratitude').innerText = `${gratPoints}/10 Points`;
+        }
+
+        function switchAnalyticsTab(tab) {
+            const btnDaily = document.getElementById('tabBtnDaily');
+            const btnWeekly = document.getElementById('tabBtnWeekly');
+            const btnMonthly = document.getElementById('tabBtnMonthly');
+            const area = document.getElementById('analyticsContentArea');
+
+            [btnDaily, btnWeekly, btnMonthly].forEach(b => {
+                b.className = "flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-600";
+            });
+
+            if (tab === 'daily') {
+                btnDaily.className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-white shadow-sm text-indigo-700";
+                renderDailyAnalyticsView(area);
+            } else if (tab === 'weekly') {
+                btnWeekly.className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-white shadow-sm text-indigo-700";
+                renderWeeklyAnalyticsView(area);
+            } else {
+                btnMonthly.className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-white shadow-sm text-indigo-700";
+                renderMonthlyAnalyticsView(area);
+            }
+        }
+
+        function renderDailyAnalyticsView(container) {
+            const today = getTodayString();
+            const timetableDone = timetableItems.filter(t => t.completedDate === today).length;
+            const waterDone = (waterLogs[today] || []).length;
+            const gratDone = (gratitudeEntries[today] || []).length;
+            const hasJournal = !!(journalEntries[today] && (journalEntries[today].pleasure || journalEntries[today].regret));
+
+            container.innerHTML = `
+                <div class="space-y-3">
+                    <div class="p-4 bg-blue-50/60 rounded-2xl border border-blue-100 flex items-center justify-between">
+                        <div>
+                            <h4 class="text-xs font-bold text-blue-900">டைம் டேபிள் செயல்பாடுகள்</h4>
+                            <p class="text-[11px] text-blue-700 mt-0.5">${timetableDone} / ${timetableItems.length} பணிகள் முடிக்கப்பட்டது</p>
+                        </div>
+                        <span class="text-xs font-bold text-blue-800">${timetableItems.length > 0 ? Math.round((timetableDone / timetableItems.length) * 100) : 0}%</span>
+                    </div>
+
+                    <div class="p-4 bg-cyan-50/60 rounded-2xl border border-cyan-100 flex items-center justify-between">
+                        <div>
+                            <h4 class="text-xs font-bold text-cyan-900">தண்ணீர் குடித்தல் (8 Slots)</h4>
+                            <p class="text-[11px] text-cyan-700 mt-0.5">${waterDone} / 8 ஸ்லாட்டுகள் முடிந்தது</p>
+                        </div>
+                        <span class="text-xs font-bold text-cyan-800">${Math.round((waterDone / 8) * 100)}%</span>
+                    </div>
+
+                    <div class="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-100 flex items-center justify-between">
+                        <div>
+                            <h4 class="text-xs font-bold text-emerald-900">காலை நன்றியுணர்வு</h4>
+                            <p class="text-[11px] text-emerald-700 mt-0.5">${gratDone} / 10 வரிகள் பதிவு செய்யப்பட்டது</p>
+                        </div>
+                        <span class="text-xs font-bold text-emerald-800">${Math.round((gratDone / 10) * 100)}%</span>
+                    </div>
+
+                    <div class="p-4 bg-purple-50/60 rounded-2xl border border-purple-100 flex items-center justify-between">
+                        <div>
+                            <h4 class="text-xs font-bold text-purple-900">இரவு சுயபரிசோதனை ஜர்னல்</h4>
+                            <p class="text-[11px] text-purple-700 mt-0.5">${hasJournal ? 'பதிவு செய்யப்பட்டது' : 'இன்னும் பதிவு செய்யப்படவில்லை'}</p>
+                        </div>
+                        <span class="text-xs font-bold ${hasJournal ? 'text-emerald-600' : 'text-slate-400'}">${hasJournal ? '100%' : '0%'}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderWeeklyAnalyticsView(container) {
+            container.innerHTML = '<div class="space-y-2">';
+            const today = new Date();
+            let totalPctSum = 0;
+
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(today.getDate() - i);
+                const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                const res = calculateDailyScore(dateStr);
+                totalPctSum += res.percentage;
+
+                const dayName = d.toLocaleDateString('ta-IN', { weekday: 'short' });
+
+                container.innerHTML += `
+                    <div class="flex items-center gap-3 p-2 bg-slate-50 rounded-xl">
+                        <span class="w-14 text-xs font-bold text-slate-600">${dayName}</span>
+                        <div class="flex-1 bg-slate-200 rounded-full h-2">
+                            <div class="bg-indigo-600 h-2 rounded-full" style="width: ${res.percentage}%"></div>
+                        </div>
+                        <span class="w-10 text-xs font-bold text-right text-slate-700">${res.percentage}%</span>
+                    </div>
+                `;
+            }
+
+            const weeklyAvg = Math.round(totalPctSum / 7);
+            container.innerHTML += `
+                <div class="mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-center">
+                    <span class="text-xs font-bold text-indigo-950">வாராந்திர சராசரி முன்னேற்றம் (Weekly Avg): ${weeklyAvg}%</span>
+                </div>
+            </div>`;
+        }
+
+        function renderMonthlyAnalyticsView(container) {
+            const today = new Date();
+            const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+            let completedDays = 0;
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const res = calculateDailyScore(dateStr);
+                if (res.percentage >= 60) completedDays++;
+            }
+
+            const consistency = Math.round((completedDays / daysInMonth) * 100);
+
+            container.innerHTML = `
+                <div class="p-5 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl border border-indigo-100 text-center">
+                    <span class="text-xs font-bold uppercase tracking-wider text-indigo-800">மாதாந்திர ஒழுக்கம் (Monthly Consistency)</span>
+                    <div class="text-4xl font-extrabold text-indigo-900 my-2">${consistency}%</div>
+                    <p class="text-xs text-slate-600">இந்த மாதத்தின் ${daysInMonth} நாட்களில் நீங்கள் ${completedDays} நாட்கள் இலக்குகளை வெற்றிகரமாக அடைந்துள்ளீர்கள்.</p>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // 10. MODAL DISPLAY SYSTEM & ESCAPE HELPERS
+        // ==========================================
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+            if (modalId === 'timetableModal') renderTimetable();
+            if (modalId === 'waterModal') renderWaterTracker();
+            if (modalId === 'booksModal') { renderBooks(); check5thOfMonthRule(); }
+            if (modalId === 'journalModal') loadJournalForDate();
+            if (modalId === 'gratitudeModal') renderGratitudeInputs();
+            if (modalId === 'analyticsModal') switchAnalyticsTab('daily');
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // ==========================================
+        // 11. INITIALIZATION ON WINDOW LOAD
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            // Display today's date formatted in Tamil
+            const now = new Date();
+            const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+            document.getElementById('currentDateDisplay').innerText = now.toLocaleDateString('ta-IN', options);
+
+            initVisionBoardSlider();
+            cycleAffirmation(false);
+            renderTimetable();
+            renderWaterTracker();
+            renderBooks();
+            check5thOfMonthRule();
+            updateOverallAnalytics();
+
+            // Load speech synthesis voices in background for meditation audio
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.onvoiceschanged = () => {
+                    window.speechSynthesis.getVoices();
+                };
+            }
+        });
+    </script>
+</body>
+</html>
