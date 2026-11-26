@@ -17,21 +17,18 @@ jobs:
         with:
           node-version: 22
 
-      - name: Setup Java 21
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Create Web Asset Directory & Copy
+      - name: Create Web Directory
         run: |
           mkdir -p www
           cp index.html www/index.html
 
-      - name: Setup Capacitor Project
+      - name: Setup Capacitor and Android Project
         run: |
           npm init -y
           npm install @capacitor/core@latest @capacitor/cli@latest @capacitor/android@latest
@@ -39,8 +36,9 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: Build Debug APK
+      - name: Accept Android Licenses & Build Debug APK
         run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
           cd android
           chmod +x ./gradlew
           ./gradlew assembleDebug --no-daemon
